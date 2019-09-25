@@ -1,0 +1,59 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+RWTexture2D<float> Texture;
+RWTexture2D<float> TextureOut;
+
+uniform int worldSize;
+
+int2 clampUV(int2 uv) {
+    return (uv+worldSize)%worldSize;
+}
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID){
+
+    int neighbors=0;
+    neighbors+=Texture[clampUV(id.xy+int2(  -1, -1  ))];
+    neighbors+=Texture[clampUV(id.xy+int2(  0,  -1  ))];
+    neighbors+=Texture[clampUV(id.xy+int2(  +1, -1  ))];
+    neighbors+=Texture[clampUV(id.xy+int2(  -1, 0   ))];
+    // neighbors+=Texture[     id.xy+int2(  0,  0   ) ]; // ignore self
+    neighbors+=Texture[clampUV(id.xy+int2(  +1, 0   ))];
+    neighbors+=Texture[clampUV(id.xy+int2(  -1, 1   ))];
+    neighbors+=Texture[clampUV(id.xy+int2(  0,  1   ))];
+    neighbors+=Texture[clampUV(id.xy+int2(  +1, 1   ))];
+    
+    
+    
+    
+    if (Texture[id.xy]>0.1) {        // Any live cell
+
+        if (neighbors<2){               // Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+
+            TextureOut[id.xy] = 0;
+
+        } else if (neighbors<=3){        // Any live cell with two or three live neighbours lives on to the next generation.    
+
+            TextureOut[id.xy] = 1;
+
+        } else {                        // Any live cell with more than three live neighbours dies, as if by overpopulation.    
+
+            TextureOut[id.xy] = 0;
+
+        }
+    
+    } else {                        // Any dead cell
+
+        if (neighbors==3) {             // Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+
+            TextureOut[id.xy] = 1;
+
+        } else {                        // dead stay dead
+        
+            TextureOut[id.xy] = 0;
+            
+        }
+    }
+    
+}

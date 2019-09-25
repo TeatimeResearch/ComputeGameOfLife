@@ -144,12 +144,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lifeActive: 1
   gameOfLife: {fileID: 7200000, guid: 48ffb751cd55f284ea59eafa50e869d6, type: 3}
-  noise: {fileID: 7200000, guid: ed0b0bbc578205f4f82d50fbfb5bbeaa, type: 3}
-  initialWorld: {fileID: 2800000, guid: f404fc63c1078ab41906959d75cde93c, type: 3}
-  initNoise: 1
-  worldSize: 1024
-  tickPeriod: 0.01
-  quantumInstability: 10000
+  filterMode: 2
+  worldSize: 512
+  tickPeriod: 0
+  initWithTexture: 0
+  initTexture: {fileID: 2800000, guid: f404fc63c1078ab41906959d75cde93c, type: 3}
+  initWithShader: 1
+  initShader: {fileID: 7200000, guid: 01f73a4e00d9cfb44ab37e2a7f2fc2b5, type: 3}
+  quantumInstabilityPct: 0.15
+  quantumInstability: 483184
   material: {fileID: 2100000, guid: f7b1ad25e8d66a94ba5ed74452d4acaf, type: 2}
   materialTexture: _MainTex
 --- !u!23 &111667616

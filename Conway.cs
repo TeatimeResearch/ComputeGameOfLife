@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 
@@ -6,16 +7,20 @@ public class Conway : MonoBehaviour {
 	public bool lifeActive = true;
 	[Header("Config")]
 	public ComputeShader gameOfLife;
-	public ComputeShader noise;
-	public Texture2D initialWorld = null;
-	public bool initNoise = false;
-
+	[Space]
+	public FilterMode filterMode = FilterMode.Point;
 	public int worldSize = 1024;
 	public float tickPeriod = 0.1f;
-	
-	
-	[Header("Quantum particles in vacuum")]
-	[Range(1,int.MaxValue/100)]
+	[Space]
+	public bool initWithTexture = false;
+	public Texture2D initTexture = null;
+	[Space]
+	public bool initWithShader = true;
+	public ComputeShader initShader;
+
+	[Header("Spontaneous particles in vacuum")]
+	[Range(0f, 1f)]
+	public float quantumInstabilityPct = 0.1f;
 	public int quantumInstability = 1000000;
 
 	[Header("Texture target")]
@@ -28,7 +33,7 @@ public class Conway : MonoBehaviour {
 	RenderTexture newWorld(int size) {
 		RenderTexture rt = new RenderTexture(size, size, 16, RenderTextureFormat.RFloat);
 		rt.autoGenerateMips = false;
-		rt.filterMode = FilterMode.Point;
+		rt.filterMode = filterMode;
 		rt.enableRandomWrite = true;
 		rt.wrapMode = TextureWrapMode.Repeat;
 		rt.Create();
@@ -40,18 +45,22 @@ public class Conway : MonoBehaviour {
 		front = newWorld(worldSize);
 		back = newWorld(worldSize);
 
-		if ( initNoise ) {
-			noise.SetTexture(0, "Texture", front);
-			noise.SetInt("worldSize", worldSize);
-			noise.SetInt("seed", (int)System.DateTime.Now.Ticks);
-			noise.Dispatch(0, worldSize / 8, worldSize / 8, 1);
-		} else {
-			Graphics.Blit(initialWorld, front);
+		if ( initWithShader ) {
+			initShader.SetTexture(0, "Texture", front);
+			initShader.SetInt("worldSize", worldSize);
+			initShader.SetInt("seed", (int)System.DateTime.Now.Ticks);
+			initShader.Dispatch(0, worldSize / 8, worldSize / 8, 1);
+		} else if (initWithTexture) {
+			Graphics.Blit(initTexture, front);
 		}
 
 		material.SetTexture(materialTexture, front);
 
 		StartCoroutine(LifeTick());
+	}
+
+	private void OnValidate() {
+		quantumInstability = 1+(int)(Mathf.Pow(quantumInstabilityPct,2) * (int.MaxValue / 100));
 	}
 
 	IEnumerator LifeTick() {

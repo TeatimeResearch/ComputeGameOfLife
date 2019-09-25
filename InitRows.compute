@@ -1,0 +1,15 @@
+
+
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+RWTexture2D<float> Texture;
+
+uniform int worldSize;
+uniform int seed;
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID){
+
+    Texture[id.xy]=id.y%2;    
+}

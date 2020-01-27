@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
 
 public class Conway : MonoBehaviour {
 	public bool lifeActive = true;

@@ -3,7 +3,7 @@
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-RWTexture2D<float> Texture;
+RWTexture2D<float4> Texture;
 
 uniform int worldSize;
 uniform int seed;

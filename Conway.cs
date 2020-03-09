@@ -30,7 +30,7 @@ public class Conway : MonoBehaviour {
 	private RenderTexture back;
 
 	RenderTexture newWorld(int size) {
-		RenderTexture rt = new RenderTexture(size, size, 16, RenderTextureFormat.RFloat);
+		RenderTexture rt = new RenderTexture(size, size, 16, RenderTextureFormat.ARGB32);
 		rt.autoGenerateMips = false;
 		rt.filterMode = filterMode;
 		rt.enableRandomWrite = true;

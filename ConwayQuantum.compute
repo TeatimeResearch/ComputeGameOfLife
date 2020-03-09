@@ -1,8 +1,8 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-RWTexture2D<float> Texture;
-RWTexture2D<float> TextureOut;
+RWTexture2D<float4> Texture;
+RWTexture2D<float4> TextureOut;
 
 uniform int worldSize;
 uniform int seed;
@@ -39,7 +39,7 @@ void CSMain (uint3 id : SV_DispatchThreadID){
     int xyseed=id.x+id.y*worldSize+seed;
     uint quantumbit=wang_hash(xyseed)/quantumInstability;
     
-    if (Texture[id.xy]>0.1) {        // Any live cell
+    if (Texture[id.xy].x>0.1) {        // Any live cell
 
         if (neighbors<2){               // Any live cell with fewer than two live neighbours dies, as if by underpopulation.
 
